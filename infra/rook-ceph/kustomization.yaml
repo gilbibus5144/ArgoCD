@@ -1,7 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - crds.yaml        # חייב להיות ראשון!
-  - common.yaml
-  - operator.yaml
-  - cluster.yaml
+  - common.yaml      # Namespace, ServiceAccounts וכו’
+  - operator.yaml    # Rook Operator
+  - cluster.yaml     # CephCluster + Pools + Dashboard
