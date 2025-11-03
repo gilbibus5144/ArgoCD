@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: rook-ceph-app
-  namespace: openshift-gitops
+  namespace: rook-ceph   # השתנה מ-openshift-gitops ל-rook-ceph
   annotations:
     argocd.argoproj.io/sync-wave: "200"
   finalizers:
@@ -26,7 +26,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: rook-ceph-charts
-  namespace: openshift-gitops
+  namespace: rook-ceph  # השתנה ל-rook-ceph
   annotations:
     argocd.argoproj.io/sync-wave: "200"
   finalizers:
@@ -55,7 +55,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: rook-ceph-cluster
-  namespace: openshift-gitops
+  namespace: rook-ceph   # השתנה ל-rook-ceph
   annotations:
     argocd.argoproj.io/sync-wave: "300"
   finalizers:
