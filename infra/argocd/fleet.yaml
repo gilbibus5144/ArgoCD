@@ -1,0 +1,10 @@
+apiVersion: fleet.cattle.io/v1alpha1
+kind: GitRepo
+metadata:
+  name: argocd-install
+  namespace: fleet-default
+spec:
+  repo: https://github.com/gilbibus5144/ArgoCD.git
+  branch: main
+  paths:
+    - infra/manifests/argocd
