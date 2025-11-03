@@ -1,3 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rook-ceph
+---
 apiVersion: ceph.rook.io/v1
 kind: CephCluster
 metadata:
@@ -5,18 +10,109 @@ metadata:
   namespace: rook-ceph
 spec:
   cephVersion:
-    image: ceph/ceph:v16
+    image: ceph/ceph:v18.2.2
   dataDirHostPath: /var/lib/rook
   mon:
     count: 3
     allowMultiplePerNode: false
   dashboard:
     enabled: true
-    ssl: false
+    ssl: true
+  network:
+    hostNetwork: false
+  placement:
+    all:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: storage-type
+                  operator: In
+                  values:
+                    - nvme
+                    - ssd
   storage:
-    useAllNodes: true
+    useAllNodes: false
     useAllDevices: false
     deviceFilter: ""
     config:
-      databaseSizeMB: "1024"
-      journalSizeMB: "1024"
+      osdsPerDevice: "1"
+    nodes:
+      - name: "nvme-pool"
+        config:
+          storeType: bluestore
+        deviceClass: nvme
+      - name: "ssd-pool"
+        config:
+          storeType: bluestore
+        deviceClass: ssd
+  resources:
+    mon:
+      requests:
+        cpu: "200m"
+        memory: "512Mi"
+      limits:
+        cpu: "500m"
+        memory: "1Gi"
+    osd:
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+      limits:
+        cpu: "1"
+        memory: "2Gi"
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: nvme-pool
+  namespace: rook-ceph
+spec:
+  failureDomain: host
+  replicated:
+    size: 2
+  deviceClass: nvme
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: ssd-pool
+  namespace: rook-ceph
+spec:
+  failureDomain: host
+  replicated:
+    size: 2
+  deviceClass: ssd
+---
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  name: cephfs
+  namespace: rook-ceph
+spec:
+  metadataPool:
+    replicated:
+      size: 2
+  dataPools:
+    - failureDomain: host
+      replicated:
+        size: 2
+  metadataServer:
+    activeCount: 1
+    activeStandby: true
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPoolRadosNamespace
+metadata:
+  name: nvme-rados
+  namespace: rook-ceph
+spec:
+  blockPoolName: nvme-pool
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPoolRadosNamespace
+metadata:
+  name: ssd-rados
+  namespace: rook-ceph
+spec:
+  blockPoolName: ssd-pool
