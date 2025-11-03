@@ -1,0 +1,22 @@
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph
+spec:
+  cephVersion:
+    image: ceph/ceph:v16
+  dataDirHostPath: /var/lib/rook
+  mon:
+    count: 3
+    allowMultiplePerNode: false
+  dashboard:
+    enabled: true
+    ssl: false
+  storage:
+    useAllNodes: true
+    useAllDevices: false
+    deviceFilter: ""
+    config:
+      databaseSizeMB: "1024"
+      journalSizeMB: "1024"
