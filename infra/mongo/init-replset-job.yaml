@@ -1,0 +1,72 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongo-init-replset
+  namespace: mongo
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: mongo-init
+          image: mongo:6.0
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # wait for mongo pods to be ready
+              echo "Waiting for mongo-0 to be ready..."
+              until nslookup mongo-0.mongo.mongo.svc.cluster.local || nslookup mongo-0.mongo || true; do sleep 2; done
+              echo "Sleeping briefly to allow mongod to start..."
+              sleep 5
+              # get root credentials from secret
+              USER=$(cat /etc/secrets/mongo-root-username)
+              PASS=$(cat /etc/secrets/mongo-root-password)
+              echo "Using user: $USER"
+              # try to connect repeatedly and only run rs.initiate once (if not already initiated)
+              ATTEMPTS=0
+              until mongo --host mongo-0.mongo -u "$USER" -p "$PASS" --authenticationDatabase admin --eval 'rs.status().ok' >/dev/null 2>&1 || [ $ATTEMPTS -gt 60 ]; do
+                # if auth not set yet, try without auth to init
+                ATTEMPTS=$((ATTEMPTS+1))
+                echo "Attempt $ATTEMPTS: trying to connect..."
+                sleep 2
+              done
+              # check if replica set already initiated
+              if mongo --host mongo-0.mongo -u "$USER" -p "$PASS" --authenticationDatabase admin --eval 'rs.isMaster()' >/dev/null 2>&1 ; then
+                echo "Replica set already configured."
+                exit 0
+              fi
+              # Build config with two members (mongo-0, mongo-1)
+              cat <<EOF > /tmp/rs.js
+              cfg = {
+                _id: "rs0",
+                members: [
+                  { _id: 0, host: "mongo-0.mongo:27017" },
+                  { _id: 1, host: "mongo-1.mongo:27017" }
+                ]
+              };
+              rs.initiate(cfg);
+              rs.status();
+              EOF
+              # try initiate (without auth if needed)
+              mongo --host mongo-0.mongo /tmp/rs.js || mongo --host mongo-0.mongo -u "$USER" -p "$PASS" --authenticationDatabase admin /tmp/rs.js
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-root-credentials
+                  key: mongo-root-username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-root-credentials
+                  key: mongo-root-password
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /etc/secrets
+              readOnly: true
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: mongo-root-credentials
