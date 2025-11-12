@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: opensearch-data1
+  namespace: opensearch
+spec:
+  serviceName: opensearch-data1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opensearch
+      role: data1
+  template:
+    metadata:
+      labels:
+        app: opensearch
+        role: data1
+    spec:
+      nodeSelector:
+        role: opne-core1
+      containers:
+        - name: opensearch
+          image: opensearchproject/opensearch:2.10.0
+          resources:
+            requests:
+              cpu: "4"
+              memory: "10Gi"
+          env:
+            - name: node.roles
+              value: "data"
+            - name: cluster.name
+              value: "opensearch-cluster"
+          volumeMounts:
+            - name: data
+              mountPath: /usr/share/opensearch/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: rook-ceph-block
+        resources:
+          requests:
+            storage: 50Gi
