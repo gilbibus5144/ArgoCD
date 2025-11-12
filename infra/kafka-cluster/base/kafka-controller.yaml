@@ -23,6 +23,14 @@ spec:
             requests:
               cpu: "2"
               memory: "4Gi"
-          envFrom:
-            - secretRef:
-                name: kafka-credentials
+          env:
+            - name: KAFKA_BROKER_USER
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-credentials
+                  key: KAFKA_USERNAME
+            - name: KAFKA_BROKER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-credentials
+                  key: KAFKA_PASSWORD
