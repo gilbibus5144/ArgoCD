@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-init-topics
+  namespace: kafka
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: kafka-init
+          image: bitnami/kafka:3.7
+          command:
+            - /bin/sh
+            - -c
+            - |
+              TOPICS=$(kubectl get cm kafka-defaults -n kafka -o jsonpath='{.data.KAFKA_DEFAULT_TOPICS}')
+              PARTITIONS=$(kubectl get cm kafka-defaults -n kafka -o jsonpath='{.data.KAFKA_DEFAULT_PARTITIONS}')
+              REPLICATION=$(kubectl get cm kafka-defaults -n kafka -o jsonpath='{.data.KAFKA_DEFAULT_REPLICATION_FACTOR}')
+              
+              for topic in $TOPICS; do
+                kafka-topics.sh --bootstrap-server kafka-broker1.kafka:9092 \
+                  --create \
+                  --topic $topic \
+                  --partitions $PARTITIONS \
+                  --replication-factor $REPLICATION || echo "Topic $topic already exists"
+              done
