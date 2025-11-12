@@ -1,1 +1,8 @@
-
+resources:
+  - namespace.yaml
+  - base/storageclass-rook.yaml
+  - base/opensearch-master.yaml
+  - base/opensearch-data1.yaml
+  - base/opensearch-data2.yaml
+  - base/opensearch-dashboard.yaml
+  - base/secret-generator-job.yaml
