@@ -1,1 +1,33 @@
-
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-dashboard
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-dashboard
+  template:
+    metadata:
+      labels:
+        app: kafka-dashboard
+    spec:
+      nodeSelector:
+        role: storge
+      containers:
+        - name: dashboard
+          image: provectuslabs/kafka-ui:latest
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1Gi"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KAFKA_CLUSTERS_0_NAME
+              value: "main-cluster"
+            - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+              value: "kafka-broker1.kafka:9092,kafka-broker2.kafka:9092,kafka-broker3.kafka:9092"
+            - name: AUTH_TYPE
+              value: "NONE"
