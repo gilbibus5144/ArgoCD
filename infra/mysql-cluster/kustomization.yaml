@@ -1,0 +1,8 @@
+resources:
+  - namespace.yaml
+  - base/secret-mysql.yaml
+  - base/mysql-defaults.yaml
+  - base/mysql-init-dbs.yaml
+  - base/mysql-primary.yaml
+  - base/mysql-secondary.yaml
+  - base/phpmyadmin.yaml
