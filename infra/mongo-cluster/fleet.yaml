@@ -1,0 +1,9 @@
+defaultNamespace: mongo
+targetCustomizations:
+  - name: mongo-cluster
+    clusterSelector:
+      matchLabels:
+        env: prod
+    yaml:
+      overlays:
+        - .
