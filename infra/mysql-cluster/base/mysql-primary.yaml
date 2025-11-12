@@ -30,17 +30,22 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: mysql-credentials
-                  key: password
+                  key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
                   name: mysql-credentials
-                  key: username
+                  key: MYSQL_USER
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mysql-credentials
-                  key: password
+                  key: MYSQL_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: MYSQL_DATABASE
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
