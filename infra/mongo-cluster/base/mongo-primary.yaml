@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-primary
+  namespace: mongo
+spec:
+  serviceName: mongo-primary
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+      role: primary
+  template:
+    metadata:
+      labels:
+        app: mongo
+        role: primary
+    spec:
+      nodeSelector:
+        role: db
+      containers:
+        - name: mongo
+          image: mongo:6.0
+          resources:
+            requests:
+              cpu: "1"
+              memory: "2Gi"
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-storage
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: rook-ceph-block
+        resources:
+          requests:
+            storage: 50Gi
+
