@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-operator
+  namespace: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-operator
+  template:
+    metadata:
+      labels:
+        app: mongo-operator
+    spec:
+      nodeSelector:
+        role: master
+      containers:
+        - name: operator
+          image: percona/percona-server-mongodb-operator:1.15.0
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1.5Gi"
+
