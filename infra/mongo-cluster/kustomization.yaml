@@ -1,0 +1,10 @@
+resources:
+  - namespace.yaml
+  - base/storageclass-rook.yaml
+  - base/mongo-primary.yaml
+  - base/mongo-cluster.yaml
+  - base/mongo-operator.yaml
+  - base/mongo-secondary1.yaml
+  - base/mongo-secondary2.yaml
+  - base/mongo-dashboard.yaml
+  - base/secret-generator-job.yaml
