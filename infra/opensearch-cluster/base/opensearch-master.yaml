@@ -1,1 +1,31 @@
-
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opensearch-master
+  namespace: opensearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opensearch
+      role: master
+  template:
+    metadata:
+      labels:
+        app: opensearch
+        role: master
+    spec:
+      nodeSelector:
+        role: master
+      containers:
+        - name: opensearch
+          image: opensearchproject/opensearch:2.10.0
+          resources:
+            requests:
+              cpu: "1"
+              memory: "3Gi"
+          env:
+            - name: node.roles
+              value: "master"
+            - name: cluster.name
+              value: "opensearch-cluster"
