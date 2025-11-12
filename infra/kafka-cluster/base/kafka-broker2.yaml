@@ -14,7 +14,7 @@ spec:
     metadata:
       labels:
         app: kafka
-        role: broker1
+        role: broker2
     spec:
       nodeSelector:
         role: kafka-core2
