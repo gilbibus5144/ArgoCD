@@ -1,1 +1,44 @@
-
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka-broker1
+  namespace: kafka
+spec:
+  serviceName: kafka-broker1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+      role: broker1
+  template:
+    metadata:
+      labels:
+        app: kafka
+        role: broker1
+    spec:
+      nodeSelector:
+        role: kafka-core1
+      containers:
+        - name: kafka
+          image: bitnami/kafka:3.7
+          resources:
+            requests:
+              cpu: "2"
+              memory: "4Gi"
+          ports:
+            - containerPort: 9092
+          envFrom:
+            - secretRef:
+                name: kafka-credentials
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /bitnami/kafka
+  volumeClaimTemplates:
+    - metadata:
+        name: kafka-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: nvme-local
+        resources:
+          requests:
+            storage: 50Gi
