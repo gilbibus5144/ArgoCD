@@ -29,5 +29,16 @@ spec:
               value: "main-cluster"
             - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
               value: "kafka-broker1.kafka:9092,kafka-broker2.kafka:9092,kafka-broker3.kafka:9092"
+            # אם בעתיד תרצה להשתמש באימות:
+            # - name: KAFKA_CLUSTERS_0_USERNAME
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: kafka-credentials
+            #       key: KAFKA_USERNAME
+            # - name: KAFKA_CLUSTERS_0_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: kafka-credentials
+            #       key: KAFKA_PASSWORD
             - name: AUTH_TYPE
               value: "NONE"
