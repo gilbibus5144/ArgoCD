@@ -1,1 +1,41 @@
-
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-secondary1
+  namespace: mongo
+spec:
+  serviceName: mongo-secondary1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+      role: secondary1
+  template:
+    metadata:
+      labels:
+        app: mongo
+        role: secondary1
+    spec:
+      nodeSelector:
+        role: storgedb
+      containers:
+        - name: mongo
+          image: mongo:6.0
+          resources:
+            requests:
+              cpu: "2"
+              memory: "4Gi"
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-storage
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: rook-ceph-block
+        resources:
+          requests:
+            storage: 50Gi
