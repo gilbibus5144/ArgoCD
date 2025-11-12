@@ -1,1 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-dashboard
+  namespace: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-dashboard
+  template:
+    metadata:
+      labels:
+        app: mongo-dashboard
+    spec:
+      nodeSelector:
+        role: storgedb
+      containers:
+        - name: dashboard
+          image: mongo-express:1.0.2
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: mongo-credentials
+          ports:
+            - containerPort: 8081
+
 
