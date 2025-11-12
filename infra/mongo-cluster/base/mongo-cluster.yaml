@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-cluster
+  namespace: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-cluster
+  template:
+    metadata:
+      labels:
+        app: mongo-cluster
+    spec:
+      nodeSelector:
+        role: master
+      containers:
+        - name: cluster
+          image: mongo:6.0
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1.5Gi"
+
