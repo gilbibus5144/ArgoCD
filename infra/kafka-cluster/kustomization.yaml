@@ -1,1 +1,9 @@
-
+resources:
+  - namespace.yaml
+  - base/storageclass-nvme.yaml
+  - base/kafka-broker1.yaml
+  - base/kafka-broker2.yaml
+  - base/kafka-broker3.yaml
+  - base/kafka-controller.yaml
+  - base/kafka-dashboard.yaml
+  - base/secret-generator-job.yaml
