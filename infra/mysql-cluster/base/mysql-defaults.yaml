@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-defaults
+  namespace: mysql
+data:
+  MYSQL_DEFAULT_DATABASES: "users,logs,metrics"
