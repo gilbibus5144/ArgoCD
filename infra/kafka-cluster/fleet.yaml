@@ -1,1 +1,9 @@
-
+defaultNamespace: kafka
+targetCustomizations:
+  - name: kafka-cluster
+    clusterSelector:
+      matchLabels:
+        env: prod
+    yaml:
+      overlays:
+        - .
