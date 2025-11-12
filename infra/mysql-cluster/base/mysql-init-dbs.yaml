@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mysql-init-dbs
+  namespace: mysql
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: init-dbs
+          image: mysql:8.0
+          command:
+            - /bin/sh
+            - -c
+            - |
+              USER=$(kubectl get secret mysql-credentials -n mysql -o jsonpath='{.data.username}' | base64 --decode)
+              PASS=$(kubectl get secret mysql-credentials -n mysql -o jsonpath='{.data.password}' | base64 --decode)
+              HOST=mysql-primary.mysql.svc.cluster.local
+
+              DBS=$(kubectl get cm mysql-defaults -n mysql -o jsonpath='{.data.MYSQL_DEFAULT_DATABASES}')
+              
+              for db in $(echo $DBS | tr "," "\n"); do
+                echo "Creating database $db if not exists..."
+                mysql -h $HOST -u $USER -p$PASS -e "CREATE DATABASE IF NOT EXISTS $db;"
+              done
