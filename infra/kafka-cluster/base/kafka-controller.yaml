@@ -1,1 +1,28 @@
-
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-controller
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-controller
+  template:
+    metadata:
+      labels:
+        app: kafka-controller
+    spec:
+      nodeSelector:
+        role: master
+      containers:
+        - name: controller
+          image: bitnami/kafka:3.7
+          command: ["/opt/bitnami/scripts/kafka/run.sh"]
+          resources:
+            requests:
+              cpu: "2"
+              memory: "4Gi"
+          envFrom:
+            - secretRef:
+                name: kafka-credentials
