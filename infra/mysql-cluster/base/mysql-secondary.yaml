@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-secondary
+  namespace: mysql
+spec:
+  serviceName: mysql-secondary
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+      role: secondary
+  template:
+    metadata:
+      labels:
+        app: mysql
+        role: secondary
+    spec:
+      nodeSelector:
+        role: storgedb
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          resources:
+            requests:
+              cpu: "2"
+              memory: "4Gi"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: password
+            - name: MYSQL_REPLICATION_MODE
+              value: "slave"
+            - name: MYSQL_MASTER_HOST
+              value: mysql-primary.mysql.svc.cluster.local
+            - name: MYSQL_MASTER_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: username
+            - name: MYSQL_MASTER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: password
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: rook-ceph-block
+        resources:
+          requests:
+            storage: 50Gi
