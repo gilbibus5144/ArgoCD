@@ -22,6 +22,11 @@ spec:
                 operator: In
                 values:
                 - "true"
+        podAntiAffinity: {}         # מנטרל anti-affinity
+        tolerations:                # תיאום עם כל taints אפשריים
+          - key: ""
+            operator: "Exists"
+            effect: "NoSchedule"
     resources:
       requests:
         cpu: "500m"
@@ -42,6 +47,11 @@ spec:
                 operator: In
                 values:
                 - "true"
+        podAntiAffinity: {}
+        tolerations:
+          - key: ""
+            operator: "Exists"
+            effect: "NoSchedule"
     resources:
       requests:
         cpu: "500m"
@@ -64,6 +74,11 @@ spec:
                 operator: In
                 values:
                 - "true"
+        podAntiAffinity: {}
+        tolerations:
+          - key: ""
+            operator: "Exists"
+            effect: "NoSchedule"
     resources:
       requests:
         cpu: "500m"
