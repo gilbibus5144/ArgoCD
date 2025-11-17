@@ -8,20 +8,20 @@ spec:
     image: ceph/ceph:v16
   dataDirHostPath: /var/lib/rook
 
-  # MON על master2 עם הגבלת משאבים
+  # MON
   mon:
-  count: 1
-  allowMultiplePerNode: false
-  placement:
-    all:                      
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: role
-              operator: In
-              values:
-              - master2
+    count: 1
+    allowMultiplePerNode: false
+    placement:
+      all:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - master2
     resources:
       requests:
         cpu: "500m"
@@ -30,51 +30,53 @@ spec:
         cpu: "500m"
         memory: "512Mi"
 
-  # MGR על master2 עם הגבלת משאבים
-  placement:
-    mgr:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: role
-              operator: In
-              values:
-              - master2
-      resources:
-        requests:
-          cpu: "500m"
-          memory: "512Mi"
-        limits:
-          cpu: "500m"
-          memory: "512Mi"
+  # MGR
+  mgr:
+    placement:
+      all:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - master2
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
 
-    dashboard:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: role
-              operator: In
-              values:
-              - master2
-      resources:
-        requests:
-          cpu: "500m"
-          memory: "512Mi"
-        limits:
-          cpu: "500m"
-          memory: "512Mi"
-
+  # Dashboard
   dashboard:
     enabled: true
     ssl: true
+    placement:
+      all:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - master2
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
 
-  # Storage - OSD על nyssdbig1 עם 300GB SSD
+  # Storage
   storage:
     useAllNodes: false
     nodes:
-      - name: "nyssdbig1"
+      - name: nyssdbig1
         placement:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -101,17 +103,30 @@ spec:
       - name: mongo-pool
         replicated:
           size: 1
-        failureDomain: host
-        crushRoot: default
-
+        crushRoot: "default"
+        deviceClass: "ssd"
+        volumeClaimTemplate:
+          spec:
+            resources:
+              requests:
+                storage: 50Gi
       - name: mysql-pool
         replicated:
           size: 1
-        failureDomain: host
-        crushRoot: default
-
+        crushRoot: "default"
+        deviceClass: "ssd"
+        volumeClaimTemplate:
+          spec:
+            resources:
+              requests:
+                storage: 50Gi
       - name: opensearch-pool
         replicated:
           size: 1
-        failureDomain: host
-        crushRoot: default
+        crushRoot: "default"
+        deviceClass: "ssd"
+        volumeClaimTemplate:
+          spec:
+            resources:
+              requests:
+                storage: 50Gi
