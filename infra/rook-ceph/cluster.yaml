@@ -10,25 +10,7 @@ spec:
   mon:
     count: 1
     allowMultiplePerNode: true
-  dashboard:
-    enabled: true
-    ssl: true
-    placement:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: node-role.kubernetes.io/master
-              operator: In
-              values:
-              - master2
-    resources:
-      requests:
-        cpu: "500m"
-        memory: "512Mi"
-      limits:
-        cpu: "500m"
-        memory: "512Mi"
+
   placement:
     mgr:
       nodeAffinity:
@@ -46,6 +28,7 @@ spec:
         limits:
           cpu: "500m"
           memory: "512Mi"
+
     operator:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -62,47 +45,64 @@ spec:
         limits:
           cpu: "500m"
           memory: "512Mi"
+
+    dashboard:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/master
+              operator: In
+              values:
+              - master2
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "512Mi"
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
+
+  dashboard:
+    enabled: true
+    ssl: true
+
   storage:
     useAllNodes: false
     nodes:
-      - name: "storge"
+      - name: "nyssdbig1"
         placement:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
               - matchExpressions:
-                - key: node-role.kubernetes.io/storage
+                - key: kubernetes.io/hostname
                   operator: In
                   values:
-                  - storge
+                  - nyssdbig1
         resources:
-          limits:
-            cpu: "2"
-            memory: "2Gi"
           requests:
             cpu: "500m"
             memory: "512Mi"
+          limits:
+            cpu: "2"
+            memory: "2Gi"
         devices:
           - name: "*"
+
     pools:
       - name: mongo-pool
         replicated:
           size: 1
         failureDomain: host
         crushRoot: default
-        size: 1
-        # 50GB תוקצה ב־PVC מחובר
       - name: mysql-pool
         replicated:
           size: 1
         failureDomain: host
         crushRoot: default
-        size: 1
-        # 50GB תוקצה ב־PVC מחובר
       - name: opensearch-pool
         replicated:
           size: 1
         failureDomain: host
         crushRoot: default
-        size: 1
-        # 50GB תוקצה ב־PVC מחובר
