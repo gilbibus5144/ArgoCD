@@ -13,6 +13,8 @@ spec:
       labels:
         app: nestjs-min
     spec:
+      nodeSelector:
+        role: db
       containers:
       - name: nestjs-min
         image: node:20-bullseye
