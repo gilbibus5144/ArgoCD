@@ -13,19 +13,96 @@ spec:
   dashboard:
     enabled: true
     ssl: true
+    placement:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/master
+              operator: In
+              values:
+              - master2
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+  placement:
+    mgr:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/master
+              operator: In
+              values:
+              - master2
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "512Mi"
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
+    operator:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/master
+              operator: In
+              values:
+              - master2
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "512Mi"
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
   storage:
     useAllNodes: false
     nodes:
-      - name: "nvme"
-        devices:
-          - name: "*"
-      - name: "ssd"
+      - name: "storge"
+        placement:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: node-role.kubernetes.io/storage
+                  operator: In
+                  values:
+                  - storge
+        resources:
+          limits:
+            cpu: "2"
+            memory: "2Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
         devices:
           - name: "*"
     pools:
-      - name: nvme-pool
+      - name: mongo-pool
         replicated:
           size: 1
-      - name: ssd-pool
+        failureDomain: host
+        crushRoot: default
+        size: 1
+        # 50GB תוקצה ב־PVC מחובר
+      - name: mysql-pool
         replicated:
           size: 1
+        failureDomain: host
+        crushRoot: default
+        size: 1
+        # 50GB תוקצה ב־PVC מחובר
+      - name: opensearch-pool
+        replicated:
+          size: 1
+        failureDomain: host
+        crushRoot: default
+        size: 1
+        # 50GB תוקצה ב־PVC מחובר
