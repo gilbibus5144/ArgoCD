@@ -10,9 +10,10 @@ spec:
 
   # MON על master2 עם הגבלת משאבים
   mon:
-    count: 1
-    allowMultiplePerNode: false
-    placement:
+  count: 1
+  allowMultiplePerNode: false
+  placement:
+    all:                      
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
