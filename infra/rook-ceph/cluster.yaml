@@ -94,7 +94,7 @@ spec:
           - name: "*"
             config:
               storeType: bluestore
-              journalSizeMB: 300
+              journalSizeMB: "300"
 
     pools:
       - name: mongo-pool
