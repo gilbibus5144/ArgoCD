@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nestjs-min
+  namespace: rook-ceph
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nestjs-min
+  template:
+    metadata:
+      labels:
+        app: nestjs-min
+    spec:
+      containers:
+      - name: nestjs-min
+        image: node:20-bullseye
+        command: ["node"]
+        args:
+          - -e
+          - |
+            const http = require('http');
+            const PORT = 3000;
+            const server = http.createServer((req, res) => {
+              res.writeHead(200, {'Content-Type': 'text/plain'});
+              res.end('Hello World from NestJS minimal!\n');
+            });
+            server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+        ports:
+        - containerPort: 3000
