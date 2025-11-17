@@ -7,29 +7,13 @@ spec:
   cephVersion:
     image: ceph/ceph:v16
   dataDirHostPath: /var/lib/rook
+
+  # MON / MGR / Dashboard על master2 בלבד
   mon:
     count: 1
-    allowMultiplePerNode: true
-
+    allowMultiplePerNode: false
   placement:
     mgr:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: role
-              operator: In
-              values:
-              - master2
-      resources:
-        requests:
-          cpu: "500m"
-          memory: "512Mi"
-        limits:
-          cpu: "500m"
-          memory: "512Mi"
-
-    operator:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
