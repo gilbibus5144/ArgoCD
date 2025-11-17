@@ -18,10 +18,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: role
+              - key: ceph-mon
                 operator: In
                 values:
-                - master2
+                - "true"
     resources:
       requests:
         cpu: "500m"
@@ -38,10 +38,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: role
+              - key: ceph-mgr
                 operator: In
                 values:
-                - master2
+                - "true"
     resources:
       requests:
         cpu: "500m"
@@ -60,10 +60,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: role
+              - key: ceph-mgr
                 operator: In
                 values:
-                - master2
+                - "true"
     resources:
       requests:
         cpu: "500m"
@@ -82,10 +82,10 @@ spec:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
               - matchExpressions:
-                - key: role
+                - key: ceph-osd
                   operator: In
                   values:
-                  - storge
+                  - "true"
         resources:
           requests:
             cpu: "500m"
