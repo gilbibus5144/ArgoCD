@@ -8,10 +8,28 @@ spec:
     image: ceph/ceph:v16
   dataDirHostPath: /var/lib/rook
 
-  # MON / MGR / Dashboard על master2 בלבד
+  # MON על master2 עם הגבלת משאבים
   mon:
     count: 1
     allowMultiplePerNode: false
+    placement:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: role
+              operator: In
+              values:
+              - master2
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+
+  # MGR על master2 עם הגבלת משאבים
   placement:
     mgr:
       nodeAffinity:
@@ -51,6 +69,7 @@ spec:
     enabled: true
     ssl: true
 
+  # Storage - OSD על nyssdbig1 עם 300GB SSD
   storage:
     useAllNodes: false
     nodes:
@@ -73,6 +92,9 @@ spec:
             memory: "2Gi"
         devices:
           - name: "*"
+            config:
+              storeType: bluestore
+              journalSizeMB: 300
 
     pools:
       - name: mongo-pool
