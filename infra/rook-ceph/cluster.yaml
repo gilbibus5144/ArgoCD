@@ -25,13 +25,11 @@ spec:
         podAntiAffinity: {}
         tolerations:
           - key: "ceph"
-            operator: "Equal"
-            value: "infra"
-            effect: "NoSchedule"
+            operator: Exists
+            effect: NoSchedule
           - key: "role"
-            operator: "Equal"
-            value: "storage"
-            effect: "NoSchedule"
+            operator: Exists
+            effect: NoSchedule
     resources:
       requests:
         cpu: "500m"
@@ -55,13 +53,11 @@ spec:
         podAntiAffinity: {}
         tolerations:
           - key: "ceph"
-            operator: "Equal"
-            value: "infra"
-            effect: "NoSchedule"
+            operator: Exists
+            effect: NoSchedule
           - key: "role"
-            operator: "Equal"
-            value: "storage"
-            effect: "NoSchedule"
+            operator: Exists
+            effect: NoSchedule
     resources:
       requests:
         cpu: "500m"
@@ -87,13 +83,11 @@ spec:
         podAntiAffinity: {}
         tolerations:
           - key: "ceph"
-            operator: "Equal"
-            value: "infra"
-            effect: "NoSchedule"
+            operator: Exists
+            effect: NoSchedule
           - key: "role"
-            operator: "Equal"
-            value: "storage"
-            effect: "NoSchedule"
+            operator: Exists
+            effect: NoSchedule
     resources:
       requests:
         cpu: "500m"
@@ -118,13 +112,11 @@ spec:
                         - "true"
           tolerations:
             - key: "ceph"
-              operator: "Equal"
-              value: "infra"
-              effect: "NoSchedule"
+              operator: Exists
+              effect: NoSchedule
             - key: "role"
-              operator: "Equal"
-              value: "storage"
-              effect: "NoSchedule"
+              operator: Exists
+              effect: NoSchedule
         resources:
           requests:
             cpu: "500m"
@@ -150,13 +142,11 @@ spec:
                         - "true"
           tolerations:
             - key: "ceph"
-              operator: "Equal"
-              value: "infra"
-              effect: "NoSchedule"
+              operator: Exists
+              effect: NoSchedule
             - key: "role"
-              operator: "Equal"
-              value: "storage"
-              effect: "NoSchedule"
+              operator: Exists
+              effect: NoSchedule
         resources:
           requests:
             cpu: "500m"
@@ -170,7 +160,7 @@ spec:
               storeType: bluestore
               journalSizeMB: "300"
 
-      - name: nynvme75opne1
+      - name: nystnvme75n1
         placement:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -182,13 +172,11 @@ spec:
                         - "true"
           tolerations:
             - key: "ceph"
-              operator: "Equal"
-              value: "infra"
-              effect: "NoSchedule"
+              operator: Exists
+              effect: NoSchedule
             - key: "role"
-              operator: "Equal"
-              value: "storage"
-              effect: "NoSchedule"
+              operator: Exists
+              effect: NoSchedule
         resources:
           requests:
             cpu: "500m"
@@ -202,7 +190,7 @@ spec:
               storeType: bluestore
               journalSizeMB: "75"
 
-      - name: nynvme75opne2
+      - name: nystnvme75n2
         placement:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -214,13 +202,11 @@ spec:
                         - "true"
           tolerations:
             - key: "ceph"
-              operator: "Equal"
-              value: "infra"
-              effect: "NoSchedule"
+              operator: Exists
+              effect: NoSchedule
             - key: "role"
-              operator: "Equal"
-              value: "storage"
-              effect: "NoSchedule"
+              operator: Exists
+              effect: NoSchedule
         resources:
           requests:
             cpu: "500m"
