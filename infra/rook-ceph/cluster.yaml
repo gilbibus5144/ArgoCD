@@ -18,14 +18,14 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: ceph-osd
+              - key: ceph-mon
                 operator: In
                 values:
                 - "true"
-        podAntiAffinity: {}
         tolerations:
-          - key: ""
-            operator: "Exists"
+          - key: "ceph"
+            operator: "Equal"
+            value: "storage"
             effect: "NoSchedule"
     resources:
       requests:
@@ -42,14 +42,15 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - key: ceph-osd
-              operator: In
-              values:
-              - "true"
-        podAntiAffinity: {}
+            - matchExpressions:
+              - key: ceph-mgr
+                operator: In
+                values:
+                - "true"
         tolerations:
-          - key: ""
-            operator: "Exists"
+          - key: "ceph"
+            operator: "Equal"
+            value: "storage"
             effect: "NoSchedule"
     resources:
       requests:
@@ -68,14 +69,15 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - key: ceph-osd
-              operator: In
-              values:
-              - "true"
-        podAntiAffinity: {}
+            - matchExpressions:
+              - key: ceph-mgr
+                operator: In
+                values:
+                - "true"
         tolerations:
-          - key: ""
-            operator: "Exists"
+          - key: "ceph"
+            operator: "Equal"
+            value: "storage"
             effect: "NoSchedule"
     resources:
       requests:
@@ -85,62 +87,34 @@ spec:
         cpu: "500m"
         memory: "512Mi"
 
-  # CSI
-  csi:
-    cephfsPlugin:
-      placement:
-        all:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-              - key: ceph-osd
-                operator: In
-                values:
-                - "true"
-          tolerations:
-            - key: ""
-              operator: Exists
-              effect: "NoSchedule"
-    rbdPlugin:
-      placement:
-        all:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-              - key: ceph-osd
-                operator: In
-                values:
-                - "true"
-          tolerations:
-            - key: ""
-              operator: Exists
-              effect: "NoSchedule"
+  # Operator
+  operator:
+    placement:
+      all:
+        tolerations:
+          - key: "ceph"
+            operator: "Equal"
+            value: "storage"
+            effect: "NoSchedule"
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
 
-  # Storage Nodes
+  # Storage OSDs
   storage:
     useAllNodes: false
     nodes:
       - name: nystssd300n1
         placement:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-              - matchExpressions:
-                - key: ceph-osd
-                  operator: In
-                  values:
-                  - "true"
           tolerations:
-            - key: ""
-              operator: Exists
+            - key: "ceph"
+              operator: "Equal"
+              value: "storage"
               effect: "NoSchedule"
-        resources:
-          requests:
-            cpu: "500m"
-            memory: "512Mi"
-          limits:
-            cpu: "2"
-            memory: "2Gi"
         devices:
           - name: "*"
             config:
@@ -149,25 +123,11 @@ spec:
 
       - name: nystssd300n2
         placement:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-              - matchExpressions:
-                - key: ceph-osd
-                  operator: In
-                  values:
-                  - "true"
           tolerations:
-            - key: ""
-              operator: Exists
+            - key: "ceph"
+              operator: "Equal"
+              value: "storage"
               effect: "NoSchedule"
-        resources:
-          requests:
-            cpu: "500m"
-            memory: "512Mi"
-          limits:
-            cpu: "2"
-            memory: "2Gi"
         devices:
           - name: "*"
             config:
@@ -176,63 +136,34 @@ spec:
 
       - name: nynvme75-1
         placement:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-              - matchExpressions:
-                - key: ceph-osd
-                  operator: In
-                  values:
-                  - "true"
           tolerations:
-            - key: ""
-              operator: Exists
+            - key: "ceph"
+              operator: "Equal"
+              value: "storage"
               effect: "NoSchedule"
-        resources:
-          requests:
-            cpu: "500m"
-            memory: "512Mi"
-          limits:
-            cpu: "2"
-            memory: "2Gi"
         devices:
           - name: "*"
             config:
               storeType: bluestore
-              journalSizeMB: "75"
+              journalSizeMB: "300"
 
       - name: nynvme75-2
         placement:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-              - matchExpressions:
-                - key: ceph-osd
-                  operator: In
-                  values:
-                  - "true"
           tolerations:
-            - key: ""
-              operator: Exists
+            - key: "ceph"
+              operator: "Equal"
+              value: "storage"
               effect: "NoSchedule"
-        resources:
-          requests:
-            cpu: "500m"
-            memory: "512Mi"
-          limits:
-            cpu: "2"
-            memory: "2Gi"
         devices:
           - name: "*"
             config:
               storeType: bluestore
-              journalSizeMB: "75"
+              journalSizeMB: "300"
 
     pools:
       - name: mongo-pool
         replicated:
           size: 1
-        crushRoot: "default"
         deviceClass: "ssd"
         volumeClaimTemplate:
           spec:
@@ -243,7 +174,6 @@ spec:
       - name: mysql-pool
         replicated:
           size: 1
-        crushRoot: "default"
         deviceClass: "ssd"
         volumeClaimTemplate:
           spec:
@@ -254,8 +184,7 @@ spec:
       - name: opensearch-pool
         replicated:
           size: 1
-        crushRoot: "default"
-        deviceClass: "ssd"
+        deviceClass: "nvme"
         volumeClaimTemplate:
           spec:
             resources:
