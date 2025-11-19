@@ -18,14 +18,15 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: ceph-mon
+              - key: ceph-osd
                 operator: In
                 values:
                 - "true"
+        podAntiAffinity: {}
         tolerations:
           - key: "ceph"
             operator: "Equal"
-            value: "storage"
+            value: "infra"
             effect: "NoSchedule"
     resources:
       requests:
@@ -42,15 +43,15 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - matchExpressions:
-              - key: ceph-mgr
-                operator: In
-                values:
-                - "true"
+            - key: ceph-osd
+              operator: In
+              values:
+              - "true"
+        podAntiAffinity: {}
         tolerations:
           - key: "ceph"
             operator: "Equal"
-            value: "storage"
+            value: "infra"
             effect: "NoSchedule"
     resources:
       requests:
@@ -69,15 +70,15 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - matchExpressions:
-              - key: ceph-mgr
-                operator: In
-                values:
-                - "true"
+            - key: ceph-osd
+              operator: In
+              values:
+              - "true"
+        podAntiAffinity: {}
         tolerations:
           - key: "ceph"
             operator: "Equal"
-            value: "storage"
+            value: "infra"
             effect: "NoSchedule"
     resources:
       requests:
@@ -87,34 +88,31 @@ spec:
         cpu: "500m"
         memory: "512Mi"
 
-  # Operator
-  operator:
-    placement:
-      all:
-        tolerations:
-          - key: "ceph"
-            operator: "Equal"
-            value: "storage"
-            effect: "NoSchedule"
-    resources:
-      requests:
-        cpu: "500m"
-        memory: "512Mi"
-      limits:
-        cpu: "500m"
-        memory: "512Mi"
-
-  # Storage OSDs
+  # Storage (OSDs)
   storage:
     useAllNodes: false
     nodes:
       - name: nystssd300n1
         placement:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - key: ceph-osd
+                operator: In
+                values:
+                - "true"
           tolerations:
             - key: "ceph"
               operator: "Equal"
-              value: "storage"
+              value: "infra"
               effect: "NoSchedule"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "2"
+            memory: "2Gi"
         devices:
           - name: "*"
             config:
@@ -123,67 +121,110 @@ spec:
 
       - name: nystssd300n2
         placement:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - key: ceph-osd
+                operator: In
+                values:
+                - "true"
           tolerations:
             - key: "ceph"
               operator: "Equal"
-              value: "storage"
+              value: "infra"
               effect: "NoSchedule"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "2"
+            memory: "2Gi"
         devices:
           - name: "*"
             config:
               storeType: bluestore
               journalSizeMB: "300"
 
-      - name: nynvme75-1
+      - name: nynvme75opne1
         placement:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - key: ceph-osd
+                operator: In
+                values:
+                - "true"
           tolerations:
             - key: "ceph"
               operator: "Equal"
-              value: "storage"
+              value: "infra"
               effect: "NoSchedule"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "2"
+            memory: "2Gi"
         devices:
           - name: "*"
             config:
               storeType: bluestore
-              journalSizeMB: "300"
+              journalSizeMB: "75"
 
-      - name: nynvme75-2
+      - name: nynvme75opne2
         placement:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - key: ceph-osd
+                operator: In
+                values:
+                - "true"
           tolerations:
             - key: "ceph"
               operator: "Equal"
-              value: "storage"
+              value: "infra"
               effect: "NoSchedule"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "2"
+            memory: "2Gi"
         devices:
           - name: "*"
             config:
               storeType: bluestore
-              journalSizeMB: "300"
+              journalSizeMB: "75"
 
     pools:
       - name: mongo-pool
         replicated:
           size: 1
+        crushRoot: "default"
         deviceClass: "ssd"
         volumeClaimTemplate:
           spec:
             resources:
               requests:
                 storage: 50Gi
-
       - name: mysql-pool
         replicated:
           size: 1
+        crushRoot: "default"
         deviceClass: "ssd"
         volumeClaimTemplate:
           spec:
             resources:
               requests:
                 storage: 50Gi
-
       - name: opensearch-pool
         replicated:
           size: 1
+        crushRoot: "default"
         deviceClass: "nvme"
         volumeClaimTemplate:
           spec:
