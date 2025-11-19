@@ -17,16 +17,20 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - matchExpressions:
-              - key: ceph-osd
-                operator: In
-                values:
-                - "true"
+              - matchExpressions:
+                  - key: ceph-osd
+                    operator: In
+                    values:
+                      - "true"
         podAntiAffinity: {}
         tolerations:
           - key: "ceph"
             operator: "Equal"
             value: "infra"
+            effect: "NoSchedule"
+          - key: "role"
+            operator: "Equal"
+            value: "storage"
             effect: "NoSchedule"
     resources:
       requests:
@@ -43,15 +47,20 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - key: ceph-osd
-              operator: In
-              values:
-              - "true"
+              - matchExpressions:
+                  - key: ceph-osd
+                    operator: In
+                    values:
+                      - "true"
         podAntiAffinity: {}
         tolerations:
           - key: "ceph"
             operator: "Equal"
             value: "infra"
+            effect: "NoSchedule"
+          - key: "role"
+            operator: "Equal"
+            value: "storage"
             effect: "NoSchedule"
     resources:
       requests:
@@ -70,15 +79,20 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - key: ceph-osd
-              operator: In
-              values:
-              - "true"
+              - matchExpressions:
+                  - key: ceph-osd
+                    operator: In
+                    values:
+                      - "true"
         podAntiAffinity: {}
         tolerations:
           - key: "ceph"
             operator: "Equal"
             value: "infra"
+            effect: "NoSchedule"
+          - key: "role"
+            operator: "Equal"
+            value: "storage"
             effect: "NoSchedule"
     resources:
       requests:
@@ -97,14 +111,19 @@ spec:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
-              - key: ceph-osd
-                operator: In
-                values:
-                - "true"
+                - matchExpressions:
+                    - key: ceph-osd
+                      operator: In
+                      values:
+                        - "true"
           tolerations:
             - key: "ceph"
               operator: "Equal"
               value: "infra"
+              effect: "NoSchedule"
+            - key: "role"
+              operator: "Equal"
+              value: "storage"
               effect: "NoSchedule"
         resources:
           requests:
@@ -124,14 +143,19 @@ spec:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
-              - key: ceph-osd
-                operator: In
-                values:
-                - "true"
+                - matchExpressions:
+                    - key: ceph-osd
+                      operator: In
+                      values:
+                        - "true"
           tolerations:
             - key: "ceph"
               operator: "Equal"
               value: "infra"
+              effect: "NoSchedule"
+            - key: "role"
+              operator: "Equal"
+              value: "storage"
               effect: "NoSchedule"
         resources:
           requests:
@@ -151,14 +175,19 @@ spec:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
-              - key: ceph-osd
-                operator: In
-                values:
-                - "true"
+                - matchExpressions:
+                    - key: ceph-osd
+                      operator: In
+                      values:
+                        - "true"
           tolerations:
             - key: "ceph"
               operator: "Equal"
               value: "infra"
+              effect: "NoSchedule"
+            - key: "role"
+              operator: "Equal"
+              value: "storage"
               effect: "NoSchedule"
         resources:
           requests:
@@ -178,14 +207,19 @@ spec:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
-              - key: ceph-osd
-                operator: In
-                values:
-                - "true"
+                - matchExpressions:
+                    - key: ceph-osd
+                      operator: In
+                      values:
+                        - "true"
           tolerations:
             - key: "ceph"
               operator: "Equal"
               value: "infra"
+              effect: "NoSchedule"
+            - key: "role"
+              operator: "Equal"
+              value: "storage"
               effect: "NoSchedule"
         resources:
           requests:
@@ -211,6 +245,7 @@ spec:
             resources:
               requests:
                 storage: 50Gi
+
       - name: mysql-pool
         replicated:
           size: 1
@@ -221,6 +256,7 @@ spec:
             resources:
               requests:
                 storage: 50Gi
+
       - name: opensearch-pool
         replicated:
           size: 1
