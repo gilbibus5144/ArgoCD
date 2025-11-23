@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mautic
+  template:
+    metadata:
+      labels:
+        app: mautic
+    spec:
+      containers:
+        - name: mautic
+          image: mautic/mautic:v4
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /var/www/html
+              name: mautic-data
+      volumes:
+        - name: mautic-data
+          persistentVolumeClaim:
+            claimName: mautic-pvc
