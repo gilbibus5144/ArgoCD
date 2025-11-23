@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautic
+spec:
+  template:
+    spec:
+      nodeSelector:
+        role: email-node
+      containers:
+        - name: mautic
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
