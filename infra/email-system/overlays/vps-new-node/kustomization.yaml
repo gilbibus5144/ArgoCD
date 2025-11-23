@@ -1,0 +1,12 @@
+resources:
+  - ../../base
+
+patchesStrategicMerge:
+  - mailu-node.yaml
+  - mautic-node.yaml
+  - mysql-node.yaml
+
+secretGenerator:
+  - name: email-credentials
+    files:
+      - secrets.env
