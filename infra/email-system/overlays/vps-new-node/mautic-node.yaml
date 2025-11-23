@@ -7,6 +7,17 @@ spec:
     spec:
       nodeSelector:
         role: email1
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z mysql 3306; do
+                echo "Waiting for MySQL..."
+                sleep 2
+              done
       containers:
         - name: mautic
           resources:
