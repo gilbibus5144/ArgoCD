@@ -4,13 +4,12 @@ kind: Kustomization
 resources:
   - storageclass-local.yaml
   - namespace.yaml
-  - bootstrap/
-  - rbac/
   - mysql/
   - app/
 
 secretGenerator:
   - name: mysql-secret
+    namespace: emailsys
     literals:
       - MYSQL_ROOT_PASSWORD=
       - MYSQL_PASSWORD=
