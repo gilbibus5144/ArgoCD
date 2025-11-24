@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: emailsys
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: mysql }
+  template:
+    metadata:
+      labels: { app: mysql }
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: "NODE_NAME_HERE"
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_DATABASE
+          value: mautic
+        - name: MYSQL_USER
+          value: mautic
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef: { name: mysql-secret, key: MYSQL_PASSWORD }
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef: { name: mysql-secret, key: MYSQL_ROOT_PASSWORD }
+        resources:
+          limits: { cpu: "2", memory: "3Gi" }
+          requests: { cpu: "500m", memory: "512Mi" }
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-storage
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
