@@ -6,10 +6,12 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels: { app: mysql }
+    matchLabels:
+      app: mysql
   template:
     metadata:
-      labels: { app: mysql }
+      labels:
+        app: mysql
     spec:
       nodeSelector:
         role: email1
@@ -23,13 +25,23 @@ spec:
           value: mautic
         - name: MYSQL_PASSWORD
           valueFrom:
-            secretKeyRef: { name: mysql-secret, key: MYSQL_PASSWORD }
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
-            secretKeyRef: { name: mysql-secret, key: MYSQL_ROOT_PASSWORD }
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        ports:
+        - containerPort: 3306
         resources:
-          limits: { cpu: "2", memory: "3Gi" }
-          requests: { cpu: "500m", memory: "512Mi" }
+          limits:
+            cpu: "2"
+            memory: "3Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
         volumeMounts:
         - mountPath: /var/lib/mysql
           name: mysql-storage
