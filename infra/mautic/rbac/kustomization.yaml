@@ -1,0 +1,4 @@
+resources:
+  - sa-secret-generator.yaml
+  - role-secret-generator.yaml
+  - rolebinding-secret-generator.yaml
