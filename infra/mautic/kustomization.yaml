@@ -1,5 +1,5 @@
 resources:
-  - bootstrap/storageclass-local.yaml
+  - storageclass-local.yaml
   - namespace.yaml
   - rbac/sa-secret-generator.yaml
   - rbac/role-secret-generator.yaml
