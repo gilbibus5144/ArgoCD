@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautic
+  namespace: emailsys
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mautic
+  template:
+    metadata:
+      labels:
+        app: mautic
+    spec:
+      nodeSelector:
+        role: email1
+      containers:
+      - name: mautic
+        image: mautic/mautic:latest
+        env:
+        - name: MAUTIC_DB_HOST
+          value: mysql.emailsys.svc.cluster.local
+        - name: MAUTIC_DB_USER
+          value: mautic
+        - name: MAUTIC_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
+        - name: MAUTIC_DB_NAME
+          value: mautic
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "2"
+            memory: "3Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+        volumeMounts:
+        - mountPath: /var/www/html/media
+          name: mautic-storage
+      volumes:
+      - name: mautic-storage
+        persistentVolumeClaim:
+          claimName: mautic-pvc
