@@ -1,0 +1,12 @@
+resources:
+  - namespace.yaml
+  - rbac/sa-secret-generator.yaml
+  - rbac/role-secret-generator.yaml
+  - rbac/rolebinding-secret-generator.yaml
+  - bootstrap/secret-generator-job.yaml
+  - mysql/pvc.yaml
+  - mysql/deployment.yaml
+  - mysql/service.yaml
+  - mautic/pvc.yaml
+  - mautic/deployment.yaml
+  - mautic/service.yaml
