@@ -8,6 +8,6 @@ resources:
   - mysql/pvc.yaml
   - mysql/deployment.yaml
   - mysql/service.yaml
-  - mautic/pvc.yaml
-  - mautic/deployment.yaml
-  - mautic/service.yaml
+  - app/pvc.yaml
+  - app/deployment.yaml
+  - app/service.yaml
